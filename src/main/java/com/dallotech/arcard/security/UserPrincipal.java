@@ -1,7 +1,7 @@
-package com.dallotech.security;
+package com.dallotech.arcard.security;
 
 
-import com.dallotech.model.User;
+import com.dallotech.arcard.model.db.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -27,7 +26,7 @@ public class UserPrincipal implements UserDetails {
 
     private String username;
 
-    @JsonIgnore
+
     private String email;
 
     @JsonIgnore

@@ -1,4 +1,4 @@
-package com.dallotech.model;
+package com.dallotech.arcard.model.db;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

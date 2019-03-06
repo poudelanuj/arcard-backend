@@ -1,6 +1,6 @@
-package com.dallotech.security;
+package com.dallotech.arcard.security;
 
-import com.dallotech.config.AppProperties;
+import com.dallotech.arcard.config.AppProperties;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service

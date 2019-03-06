@@ -1,4 +1,4 @@
-package com.dallotech.exception;
+package com.dallotech.arcard.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
 

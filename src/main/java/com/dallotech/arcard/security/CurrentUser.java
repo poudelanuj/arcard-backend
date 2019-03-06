@@ -1,4 +1,4 @@
-package com.dallotech.security;
+package com.dallotech.arcard.security;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 

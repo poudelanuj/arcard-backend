@@ -1,18 +1,16 @@
-package com.dallotech.security;
+package com.dallotech.arcard.security;
 
 
 
-import com.dallotech.exception.ResourceNotFoundException;
-import com.dallotech.model.User;
-import com.dallotech.repository.UserRepository;
+import com.dallotech.arcard.exception.ResourceNotFoundException;
+import com.dallotech.arcard.model.db.User;
+import com.dallotech.arcard.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 
 @Service
