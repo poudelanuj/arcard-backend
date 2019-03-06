@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserPrincipal implements UserDetails {
-    private Long id;
+    private UUID id;
 
     private String username;
 
@@ -40,7 +41,7 @@ public class UserPrincipal implements UserDetails {
         ).collect(Collectors.toList());
 
         return new UserPrincipal(
-                user.getIdUser(),
+                user.getId(),
                 user.getEmail(),    // username is same as email
                 user.getEmail(),
                 user.getPassword(),

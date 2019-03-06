@@ -1,4 +1,4 @@
-package com.dallotech;
+package com.dallotech.arcard;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
