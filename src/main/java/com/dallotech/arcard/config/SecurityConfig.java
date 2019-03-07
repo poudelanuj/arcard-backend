@@ -1,6 +1,7 @@
 package com.dallotech.arcard.config;
 
 import com.dallotech.arcard.security.CustomUserDetailsService;
+import com.dallotech.arcard.security.RestAuthenticationEntryPoint;
 import com.dallotech.arcard.security.TokenAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -73,11 +74,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf()
                 .disable()
-                .formLogin()
-                .disable()
-                .httpBasic()
-                .disable()
                 .exceptionHandling()
+                .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
                 .authorizeRequests()
                 .antMatchers("/",
@@ -105,35 +103,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler);
 
-
-
-//        http
-//                .cors()
-//                .and()
-//                .csrf()
-//                .disable()
-//                .formLogin()
-//                .disable()
-//                .httpBasic()
-//                .disable()
-//                .exceptionHandling()
-//                .and()
-//                .authorizeRequests()
-//                .antMatchers("/",
-//                        "/error",
-//                        "/favicon.ico",
-//                        "/**/*.png",
-//                        "/**/*.gif",
-//                        "/**/*.svg",
-//                        "/**/*.jpg",
-//                        "/**/*.html",
-//                        "/**/*.css",
-//                        "/**/*.js")
-//                .permitAll()
-//                .antMatchers("/auth/**", "/oauth2/**","/event/**").permitAll()
-//                .antMatchers("/api/v1/users/**").permitAll()
-//                .anyRequest()
-//                .authenticated();
         // Add our custom JWT security filter
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }

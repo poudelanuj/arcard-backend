@@ -68,15 +68,8 @@ public class AuthController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        User user=new User();
-        user.setFirstName(signupRequestDto.getFirstName());
-        user.setLastName(signupRequestDto.getLastName());
-        user.setEmail(signupRequestDto.getEmail());
+        User user=User.getUserFromUserDto(signupRequestDto);
         user.setPassword(passwordEncoder.encode(signupRequestDto.getPassword()));
-        UserDescription userDescription=new UserDescription();
-        Address address=new Address();
-        user.setUserDescription(userDescription);
-        user.setAddress(address);
         User result = userRepository.save(user);
         Authentication authentication=authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -92,12 +85,7 @@ public class AuthController {
         signUpResponseDto.setUserDto(UserDto.getUserDtoFromUser(result));
 
         return ResponseEntity.ok(signUpResponseDto);
-
-
-
-
     }
-
 
     @PostMapping("/sign_out")
     public ResponseEntity signOut(HttpServletResponse response) {

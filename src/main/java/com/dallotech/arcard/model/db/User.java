@@ -1,5 +1,8 @@
 package com.dallotech.arcard.model.db;
 
+import com.dallotech.arcard.model.dto.SignUpResponseDto;
+import com.dallotech.arcard.model.dto.SignupRequestDto;
+import com.dallotech.arcard.model.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +23,7 @@ public class User {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "uuid",updatable = false,columnDefinition = "BINARY(16)")
+    @Column(name = "id_user",updatable = false,columnDefinition = "BINARY(16)")
     private UUID uuid;
 
     @Column(name="email",unique = true)
@@ -62,6 +65,18 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
+
+    public static User getUserFromUserDto(SignupRequestDto signupRequestDto){
+        User user=new User();
+        user.setFirstName(signupRequestDto.getFirstName());
+        user.setLastName(signupRequestDto.getLastName());
+        user.setEmail(signupRequestDto.getEmail());
+        UserDescription userDescription=new UserDescription();
+        Address address=new Address();
+        user.setUserDescription(userDescription);
+        user.setAddress(address);
+        return user;
+    }
 
 
 }
