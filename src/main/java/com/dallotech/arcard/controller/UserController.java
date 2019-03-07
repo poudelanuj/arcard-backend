@@ -48,12 +48,12 @@ public class UserController {
     @Autowired
     private SessionService sessionService;
 
-    @GetMapping("/users/data")
+    @GetMapping("/user/data")
     public ResponseEntity<?> getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
         return userService.getUserDtoFromUserPrincipal(userPrincipal);
     }
 
-    @PostMapping("users/data")
+    @PostMapping("user/data")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
         sessionService.verifyAndGetLoggedInUser();
         String fileName = fileStorageService.storeFile(file);
@@ -74,7 +74,7 @@ public class UserController {
 
     }
 
-    @GetMapping("users/qr_code")
+    @GetMapping("user/qr_code")
     public ResponseEntity<?> downloadFile(){
         LoggedUser loggedUser=sessionService.verifyAndGetLoggedInUser();
         try {
