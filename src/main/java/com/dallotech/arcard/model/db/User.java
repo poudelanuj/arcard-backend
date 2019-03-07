@@ -20,8 +20,8 @@ public class User {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "id_user",updatable = false,columnDefinition = "BINARY(16)")
-    private UUID id;
+    @Column(name = "uuid",updatable = false,columnDefinition = "BINARY(16)")
+    private UUID uuid;
 
     @Column(name="email",unique = true)
     String email;
@@ -36,8 +36,11 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "id_role"))
     private Set<Role> roles = new HashSet<>();
 
-    @Column(name="name")
-    private String name;
+    @Column(name="first_name")
+    private String firstName;
+
+    @Column(name="last_name")
+    private String lastName;
 
     @Column(name="facebook_link")
     private String facebookLink;
@@ -45,17 +48,20 @@ public class User {
     @Column(name="instagram_link")
     private String instagramLink;
 
-    @Column(name = "google_link")
-    private String googleLink;
-
-    @Column(name = "youtube_link")
-    private String youtubeLink;
+    @Column(name = "twitter_link")
+    private String twitterLink;
 
     @Column(name="linkedin_link")
     private String linkedinLink;
 
-    @OneToOne(mappedBy = "user_id")
+    @Column(name = "phone")
+    private String phone;
+
+    @OneToOne(cascade = CascadeType.ALL)
     private UserDescription userDescription;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Address address;
 
 
 }

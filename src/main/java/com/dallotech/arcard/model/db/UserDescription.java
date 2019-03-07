@@ -16,8 +16,8 @@ import javax.persistence.*;
 @Table(name = "user_description")
 public class UserDescription {
 
-
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 
@@ -27,15 +27,20 @@ public class UserDescription {
     @Column(name="hobby")
     private String hobby;
 
+    @Column(name = "professional_details")
+    private String professionalDetails;
+
+    @Column(name = "skills")
+    private String skills;
 
     @OneToOne
-    @JoinColumn(name="user_id")
+    @PrimaryKeyJoinColumn
     private User user;
 
     public static UserDescription getUserDescriptionFromDto(UserDescriptionDto userDescriptionDto){
         UserDescription userDescription=new UserDescription();
         userDescription.setSummary(userDescriptionDto.getSummary());
-        userDescription.setHobby(userDescription.getHobby());
+        userDescription.setHobby(userDescriptionDto.getHobby());
         return userDescription;
     }
 

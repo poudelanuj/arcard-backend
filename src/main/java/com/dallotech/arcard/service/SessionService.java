@@ -10,9 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Service("sessionService")
 public class SessionService {
 
@@ -32,7 +29,7 @@ public class SessionService {
             User user = userRepository.findByEmail(loggedInUserEmail).get();
 
 
-            return new LoggedUser(user.getId(),user);
+            return new LoggedUser(user.getUuid(),user);
         } else {
             throw new UserEmailNotFound(loggedInUserEmail);
         }

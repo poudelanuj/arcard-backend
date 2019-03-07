@@ -41,7 +41,7 @@ public class UserPrincipal implements UserDetails {
         ).collect(Collectors.toList());
 
         return new UserPrincipal(
-                user.getId(),
+                user.getUuid(),
                 user.getEmail(),    // username is same as email
                 user.getEmail(),
                 user.getPassword(),

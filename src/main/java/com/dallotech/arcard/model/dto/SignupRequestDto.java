@@ -10,8 +10,10 @@ import lombok.*;
 @Setter
 public class SignupRequestDto {
 
-    @JsonProperty("name")
-    private String name;
+    @JsonProperty("first_name")
+    private String firstName;
+    @JsonProperty("last_name")
+    private String lastName;
     @JsonProperty("email")
     private String email;
     @JsonProperty("password")

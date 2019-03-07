@@ -29,8 +29,8 @@ public class QrService {
 
 
     public ResponseEntity<?> getUserInformationFromQrData(QrDataRequestDto qrDataRequestDto) throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
-        String uuid= EncryptionDecryption.decrypt(qrDataRequestDto.getQrData());
-        Optional<User> userOptional=userRepository.findById(UUID.fromString(uuid));
+        String email= EncryptionDecryption.decrypt(qrDataRequestDto.getQrData());
+        Optional<User> userOptional=userRepository.findByEmail(email);
         if(userOptional.isPresent()){
             UserDto userDto=UserDto.getUserDtoFromUser(userOptional.get());
             return ResponseEntity.ok(userDto);

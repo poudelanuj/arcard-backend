@@ -28,7 +28,7 @@ public class QrController{
     @Autowired
     QrService qrService;
 
-    @PostMapping("/qr")
+    @PostMapping("/scan_qr")
     public ResponseEntity<?> getQrInformation(@Valid @RequestBody QrDataRequestDto qrDataRequestDto){
         try {
             return qrService.getUserInformationFromQrData(qrDataRequestDto);

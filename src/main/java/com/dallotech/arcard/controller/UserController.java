@@ -1,8 +1,8 @@
 package com.dallotech.arcard.controller;
 
 import com.dallotech.arcard.exception.ImageFileNotFoundException;
-import com.dallotech.arcard.model.db.User;
-import com.dallotech.arcard.model.dto.UserDto;
+import com.dallotech.arcard.model.dto.SaveImageDto;
+import com.dallotech.arcard.model.dto.UserEditRequestDto;
 import com.dallotech.arcard.model.internal.LoggedUser;
 import com.dallotech.arcard.payload.UploadFileResponse;
 import com.dallotech.arcard.security.CurrentUser;
@@ -68,18 +68,19 @@ public class UserController {
     }
 
     @PostMapping("user/edit")
-    public ResponseEntity<?> editProfile(@Valid @RequestBody UserDto userDto){
+    public ResponseEntity<?> editProfile(@Valid @RequestBody UserEditRequestDto userEditRequestDto){
         LoggedUser loggedUser=sessionService.verifyAndGetLoggedInUser();
-        return userService.editInformation(loggedUser,userDto);
+        return userService.editInformation(loggedUser,userEditRequestDto);
 
     }
 
     @GetMapping("users/qr_code")
     public ResponseEntity<?> downloadFile(){
-        LoggedUser user=sessionService.verifyAndGetLoggedInUser();
+        LoggedUser loggedUser=sessionService.verifyAndGetLoggedInUser();
         try {
-            if(QRGenerator.createQRImage(user.getUserId())){
-                Resource resource = fileStorageService.loadFileAsResource("./QrImage/"+user.getUserId().toString()+".png");
+            SaveImageDto saveImageDto=QRGenerator.createQRImage(loggedUser.getUser().getEmail());
+            if(saveImageDto.isSaveStatus()){
+                Resource resource = fileStorageService.loadFileAsResource(saveImageDto.getFileName()+".png");
                 String contentType = "image/png";
                 return ResponseEntity.ok()
                         .contentType(MediaType.parseMediaType(contentType))

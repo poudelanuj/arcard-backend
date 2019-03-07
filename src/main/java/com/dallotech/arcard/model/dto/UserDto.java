@@ -14,31 +14,40 @@ public class UserDto {
 
     @JsonProperty("email")
     private String email;
-    @JsonProperty("name")
-    private String name;
+    @JsonProperty("first_name")
+    private String firstName;
+    @JsonProperty("last_name")
+    private String lastName;
     @JsonProperty("facebook_link")
     private String facebookLink;
     @JsonProperty("instagram_link")
     private String instagramLink;
-    @JsonProperty("google_link")
-    private String googleLink;
-    @JsonProperty("youtube_link")
-    private String youtubeLink;
+    @JsonProperty("twitter_link")
+    private String twitterLink;
     @JsonProperty("linkedin_link")
     private String linkedinLink;
+    @JsonProperty("phone")
+    private String phone;
     @JsonProperty("user_description")
     private UserDescriptionDto userDescriptionDto;
-
+    @JsonProperty("address")
+    private AddressDto addressDto;
     public static UserDto getUserDtoFromUser(User user){
         UserDto userDto=new UserDto();
         userDto.setEmail(user.getEmail());
-        userDto.setName(user.getName());
+        userDto.setFirstName(user.getFirstName());
+        userDto.setLastName(user.getLastName());
         userDto.setFacebookLink(user.getFacebookLink());
         userDto.setInstagramLink(user.getInstagramLink());
-        userDto.setGoogleLink(user.getGoogleLink());
-        userDto.setYoutubeLink(user.getYoutubeLink());
+        userDto.setTwitterLink(user.getTwitterLink());
+        userDto.setPhone(user.getPhone());
         userDto.setLinkedinLink(user.getLinkedinLink());
-        userDto.setUserDescriptionDto(UserDescriptionDto.getUserDescriptionDto(user.getUserDescription()));
+        if(user.getUserDescription()!=null){
+            userDto.setUserDescriptionDto(UserDescriptionDto.getUserDescriptionDto(user.getUserDescription()));
+        }
+        if(user.getAddress()!=null){
+            userDto.setAddressDto(AddressDto.getAddressDtoFromAddress(user.getAddress()));
+        }
         return userDto;
     }
 
