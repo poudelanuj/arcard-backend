@@ -9,10 +9,10 @@ public class AddressService {
 
     public Address updateAddress(Address address,AddressDto addressDto){
         address.setCity(addressDto.getCity());
-        address.setStreetAddress(address.getStreetAddress());
-        address.setState(address.getState());
-        address.setPinCode(address.getPinCode());
-        address.setCountry(address.getCountry());
+        address.setStreetAddress(addressDto.getStreetAddress());
+        address.setState(addressDto.getState());
+        address.setPinCode(addressDto.getPinCode());
+        address.setCountry(addressDto.getCountry());
         return address;
     }
 
