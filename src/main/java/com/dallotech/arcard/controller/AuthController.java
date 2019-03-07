@@ -1,7 +1,10 @@
 package com.dallotech.arcard.controller;
 
+import com.dallotech.arcard.model.db.Address;
 import com.dallotech.arcard.model.db.User;
+import com.dallotech.arcard.model.db.UserDescription;
 import com.dallotech.arcard.model.dto.LoginDto;
+import com.dallotech.arcard.model.dto.SignUpResponseDto;
 import com.dallotech.arcard.model.dto.SignupRequestDto;
 import com.dallotech.arcard.model.dto.UserDto;
 import com.dallotech.arcard.payload.ApiResponse;
@@ -70,9 +73,25 @@ public class AuthController {
         user.setLastName(signupRequestDto.getLastName());
         user.setEmail(signupRequestDto.getEmail());
         user.setPassword(passwordEncoder.encode(signupRequestDto.getPassword()));
+        UserDescription userDescription=new UserDescription();
+        Address address=new Address();
+        user.setUserDescription(userDescription);
+        user.setAddress(address);
         User result = userRepository.save(user);
+        Authentication authentication=authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        signupRequestDto.getEmail(),
+                        signupRequestDto.getPassword()
+                )
+        );
 
-        return ResponseEntity.ok(UserDto.getUserDtoFromUser(result));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = tokenProvider.createToken(authentication);
+        SignUpResponseDto signUpResponseDto=new SignUpResponseDto();
+        signUpResponseDto.setAuthResponse(new AuthResponse(token,"Bearer"));
+        signUpResponseDto.setUserDto(UserDto.getUserDtoFromUser(result));
+
+        return ResponseEntity.ok(signUpResponseDto);
 
 
 
