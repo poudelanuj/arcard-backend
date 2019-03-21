@@ -10,10 +10,10 @@ import com.dallotech.arcard.security.UserPrincipal;
 import com.dallotech.arcard.service.FileStorageService;
 import com.dallotech.arcard.service.SessionService;
 import com.dallotech.arcard.service.UserService;
-import com.dallotech.arcard.utils.QRGenerator;
+import com.dallotech.arcard.utils.QRGeneratorWithLogo;
 import com.google.zxing.WriterException;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,14 +22,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import org.springframework.core.io.Resource;
-
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
-import java.io.File;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -80,7 +76,7 @@ public class UserController {
     public ResponseEntity<?> downloadFile(){
         LoggedUser loggedUser=sessionService.verifyAndGetLoggedInUser();
         try {
-            SaveImageDto saveImageDto=QRGenerator.createQRImage(loggedUser.getUser().getEmail());
+            SaveImageDto saveImageDto= QRGeneratorWithLogo.generateQRWithLogo(loggedUser.getUser().getEmail());
             if(saveImageDto.isSaveStatus()){
                 Resource resource = fileStorageService.loadFileAsResource(saveImageDto.getFileName()+".png");
                 String contentType = "image/png";

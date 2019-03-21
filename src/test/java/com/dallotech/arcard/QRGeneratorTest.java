@@ -1,6 +1,7 @@
 package com.dallotech.arcard;
 
 import com.dallotech.arcard.utils.QRGenerator;
+import com.dallotech.arcard.utils.QRGeneratorWithLogo;
 import com.google.zxing.WriterException;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +21,11 @@ public class QRGeneratorTest {
     @Test
     public void generateQR() throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IOException, BadPaddingException, IllegalBlockSizeException, WriterException, InvalidKeyException {
         assert(QRGenerator.createQRImage("poudel.01anuj@gmail.com").isSaveStatus());
+    }
+
+    @Test
+    public void generateLogoQR(){
+        assert (QRGeneratorWithLogo.generateQRWithLogo("poudel.01anuj@gmail.com").isSaveStatus());
     }
 
 }
