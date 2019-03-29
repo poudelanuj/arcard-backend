@@ -10,6 +10,7 @@ import com.dallotech.arcard.security.UserPrincipal;
 import com.dallotech.arcard.service.FileStorageService;
 import com.dallotech.arcard.service.SessionService;
 import com.dallotech.arcard.service.UserService;
+import com.dallotech.arcard.utils.QRGenerator;
 import com.dallotech.arcard.utils.QRGeneratorWithLogo;
 import com.google.zxing.WriterException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +77,7 @@ public class UserController {
     public ResponseEntity<?> downloadFile(){
         LoggedUser loggedUser=sessionService.verifyAndGetLoggedInUser();
         try {
-            SaveImageDto saveImageDto= QRGeneratorWithLogo.generateQRWithLogo(loggedUser.getUser().getEmail());
+            SaveImageDto saveImageDto= QRGenerator.createQRImage(loggedUser.getUser().getEmail());
             if(saveImageDto.isSaveStatus()){
                 Resource resource = fileStorageService.loadFileAsResource(saveImageDto.getFileName()+".png");
                 String contentType = "image/png";
