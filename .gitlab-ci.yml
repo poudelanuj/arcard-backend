@@ -50,6 +50,6 @@ deploy_staging:
     name: staging
     url: https://arcard-backend.herokuapp.com
   only:
-    - master
+    - anuj-branch
   tags:
     - docker
