@@ -24,7 +24,7 @@ public class QRGeneratorTest {
     }
 
     @Test
-    public void generateLogoQR(){
+    public void generateLogoQR() throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IOException, BadPaddingException, IllegalBlockSizeException, WriterException, InvalidKeyException {
         assert (QRGeneratorWithLogo.generateQRWithLogo("poudel.01anuj@gmail.com").isSaveStatus());
     }
 
