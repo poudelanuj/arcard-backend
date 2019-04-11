@@ -46,9 +46,13 @@ app:
     tokenExpirationMsec: 864000000
 
 
-
-
-
+server:
+  port: 8443
+  ssl:
+    key-store-type: PKCS12
+    key-store: /etc/letsencrypt/live/core.getamaterasu.com/keystore.p12
+    key-store-password: ArCard132$
+    key-alias: tomcat
 
 
 
