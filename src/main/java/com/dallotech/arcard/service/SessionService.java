@@ -27,7 +27,7 @@ public class SessionService {
         String loggedInUserEmail = ((UserDetails) principal).getUsername();
         if (userRepository.existsByEmail(loggedInUserEmail)) {
             User user = userRepository.findByEmail(loggedInUserEmail).get();
-            return new LoggedUser(user.getUuid(),user);
+            return new LoggedUser(user.getId(),user);
         } else {
             throw new UserEmailNotFound(loggedInUserEmail);
         }

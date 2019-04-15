@@ -46,13 +46,13 @@ public class TokenProvider {
                 .compact();
     }
 
-    public UUID getUserIdFromToken(String token) {
+    public Long getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(appProperties.getAuth().getTokenSecret())
                 .parseClaimsJws(token)
                 .getBody();
 
-        return UUID.fromString(claims.getSubject());
+        return Long.valueOf(claims.getSubject());
     }
 
     public boolean validateToken(String authToken) {

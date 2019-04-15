@@ -13,7 +13,7 @@ public class QrDataRequestDto {
 
 
     @JsonProperty("qr_data")
-    private String qrData;
+    private Long qrData;
 
 
 }

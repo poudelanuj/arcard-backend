@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class LoggedUser {
 
-    private UUID userId;
+    private Long userId;
     private User user;
 
 

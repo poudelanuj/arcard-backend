@@ -3,6 +3,7 @@ package com.dallotech.arcard.model.db;
 import com.dallotech.arcard.model.dto.SignUpResponseDto;
 import com.dallotech.arcard.model.dto.SignupRequestDto;
 import com.dallotech.arcard.model.dto.UserDto;
+import com.dallotech.arcard.utils.StringListConverter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,10 +22,9 @@ import java.util.*;
 public class User {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "id_user",updatable = false,columnDefinition = "BINARY(16)")
-    private UUID uuid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_user")
+    private Long id;
 
     @Column(name="email",unique = true)
     String email;
@@ -42,8 +42,29 @@ public class User {
     @Column(name="first_name")
     private String firstName;
 
+    @Column(name = "middle_name")
+    private String middleName;
+
     @Column(name="last_name")
     private String lastName;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name="about_me")
+    private String aboutMe;
+
+    @Column(name = "skills")
+    @Convert(converter = StringListConverter.class)
+    private List<String> skills;
+
+    @Column(name="projects")
+    @Convert(converter = StringListConverter.class)
+    private List<String> projects;
+
+    @Column(name = "activities")
+    @Convert(converter = StringListConverter.class)
+    private List<String> activities;
 
     @Column(name="facebook_link")
     private String facebookLink;
@@ -57,24 +78,19 @@ public class User {
     @Column(name="linkedin_link")
     private String linkedinLink;
 
-    @Column(name = "phone")
-    private String phone;
+    @Column(name="portfolio_link")
+    private String protfolioLink;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private UserDescription userDescription;
+    @Column(name = "image_path")
+    private String imagePath;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Address address;
 
     public static User getUserFromUserDto(SignupRequestDto signupRequestDto){
         User user=new User();
         user.setFirstName(signupRequestDto.getFirstName());
+        user.setMiddleName(signupRequestDto.getMiddleName());
         user.setLastName(signupRequestDto.getLastName());
         user.setEmail(signupRequestDto.getEmail());
-        UserDescription userDescription=new UserDescription();
-        Address address=new Address();
-        user.setUserDescription(userDescription);
-        user.setAddress(address);
         return user;
     }
 

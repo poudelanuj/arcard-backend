@@ -1,15 +1,16 @@
 package com.dallotech.arcard.service;
 
-import com.dallotech.arcard.model.db.Address;
+import com.dallotech.arcard.model.db.Education;
+import com.dallotech.arcard.model.db.Experience;
 import com.dallotech.arcard.model.db.User;
-import com.dallotech.arcard.model.db.UserDescription;
-import com.dallotech.arcard.model.dto.UserDescriptionDto;
+import com.dallotech.arcard.model.dto.EducationDto;
+import com.dallotech.arcard.model.dto.ExperienceDto;
 import com.dallotech.arcard.model.dto.UserDto;
 import com.dallotech.arcard.model.dto.UserEditRequestDto;
 import com.dallotech.arcard.model.internal.LoggedUser;
 import com.dallotech.arcard.payload.ApiResponse;
-import com.dallotech.arcard.repository.AddressRepository;
-import com.dallotech.arcard.repository.UserDescriptionRepository;
+import com.dallotech.arcard.repository.EducationRepository;
+import com.dallotech.arcard.repository.ExperienceRepository;
 import com.dallotech.arcard.repository.UserRepository;
 import com.dallotech.arcard.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service("userService")
 public class UserService {
@@ -26,61 +30,80 @@ public class UserService {
     UserRepository userRepository;
 
     @Autowired
-    AddressRepository addressRepository;
+    EducationService educationService;
 
     @Autowired
-    UserDescriptionService userDescriptionService;
+    ExperienceService experienceService;
 
     @Autowired
-    AddressService addressService;
+    EducationRepository educationRepository;
 
     @Autowired
-    UserDescriptionRepository userDescriptionRepository;
+    ExperienceRepository experienceRepository;
 
 
-    public ResponseEntity<?> getUserDtoFromUserPrincipal(UserPrincipal userPrincipal){
-        Optional<User> userOptional= userRepository.findByEmail(userPrincipal.getEmail());
-        if(userOptional.isPresent()){
-            User user=userOptional.get();
-            return ResponseEntity.ok(UserDto.getUserDtoFromUser(user));
+    public ResponseEntity<?> getUserDtoFromUserPrincipal(UserPrincipal userPrincipal) {
+        Optional<User> userOptional = userRepository.findByEmail(userPrincipal.getEmail());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            return ResponseEntity.ok(getCompleteUserDetail(user));
         }
-        return new ResponseEntity<>(new ApiResponse(false,"User not found"), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new ApiResponse(false, "User not found"), HttpStatus.NOT_FOUND);
 
     }
 
-    public ResponseEntity<?> editInformation(LoggedUser loggedUser, UserEditRequestDto userEditRequestDto){
+    public ResponseEntity<?> editInformation(LoggedUser loggedUser, UserEditRequestDto userEditRequestDto) {
 
 
-        User user=loggedUser.getUser();
+        User user = loggedUser.getUser();
         user.setFirstName(userEditRequestDto.getFirstName());
+        user.setMiddleName(userEditRequestDto.getMiddleName());
         user.setLastName(userEditRequestDto.getLastName());
+        user.setPhone(userEditRequestDto.getPhone());
+        user.setAboutMe(userEditRequestDto.getAboutMe());
+        user.setSkills(userEditRequestDto.getSkills());
+        user.setProjects(userEditRequestDto.getProjects());
+        user.setActivities(userEditRequestDto.getActivities());
+        user.setProtfolioLink(userEditRequestDto.getProtfolioLink());
         user.setFacebookLink(userEditRequestDto.getFacebookLink());
         user.setInstagramLink(userEditRequestDto.getInstagramLink());
         user.setTwitterLink(userEditRequestDto.getTwitterLink());
-        user.setPhone(userEditRequestDto.getPhone());
         user.setLinkedinLink(userEditRequestDto.getLinkedinLink());
-        UserDescription userDescription=user.getUserDescription();
-        Address address=user.getAddress();
 
-        if(userDescription==null){
-            userDescription= UserDescription.getUserDescriptionFromDto(userEditRequestDto.getUserDescriptionDto());
-        }else{
-            userDescription=userDescriptionService.updateUserDescription(userDescription,userEditRequestDto.getUserDescriptionDto());
-        }
-        if(address==null){
-            address=Address.getAddressFromDto(userEditRequestDto.getAddressDto());
-        }else{
-            address=addressService.updateAddress(address,userEditRequestDto.getAddressDto());
+        if (!userEditRequestDto.getExperienceDtoList().isEmpty()) {
+            experienceService.addExperience(userEditRequestDto.getExperienceDtoList(), user);
         }
 
-        user.setUserDescription(userDescription);
-        user.setAddress(address);
-        user=userRepository.save(user);
-        return ResponseEntity.ok(UserDto.getUserDtoFromUser(user));
+        if (!userEditRequestDto.getEducationDtoList().isEmpty()) {
+            educationService.addEducation(userEditRequestDto.getEducationDtoList(), user);
+        }
+        user = userRepository.save(user);
+        return ResponseEntity.ok(new ApiResponse(true, "Information Successfully Added"));
 
 
     }
 
+    public UserDto getCompleteUserDetail(User user){
+        Optional<List<Education>> optionalEducationList = educationRepository.findByUser_Id(user.getId());
+        Optional<List<Experience>> optionalExperienceList = experienceRepository.findByUser_Id(user.getId());
+        List<EducationDto> educationDtoList = new ArrayList<>();
+        List<ExperienceDto> experienceDtoList = new ArrayList<>();
+        if (optionalEducationList.isPresent()) {
+            educationDtoList = optionalEducationList.get().stream().map(EducationDto::getEducationDto).collect(Collectors.toList());
+
+        }
+
+        if (optionalExperienceList.isPresent()) {
+
+            experienceDtoList = optionalExperienceList.get().stream().map(ExperienceDto::getExperienceDto).collect(Collectors.toList());
+
+        }
+
+        return UserDto.getUserDtoFromUser(user,educationDtoList,experienceDtoList);
+
+
+    }
 
 
 }

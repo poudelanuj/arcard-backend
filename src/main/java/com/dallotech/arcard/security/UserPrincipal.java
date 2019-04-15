@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserPrincipal implements UserDetails {
-    private UUID id;
+    private Long id;
 
     private String username;
 
@@ -41,7 +41,7 @@ public class UserPrincipal implements UserDetails {
         ).collect(Collectors.toList());
 
         return new UserPrincipal(
-                user.getUuid(),
+                user.getId(),
                 user.getEmail(),    // username is same as email
                 user.getEmail(),
                 user.getPassword(),

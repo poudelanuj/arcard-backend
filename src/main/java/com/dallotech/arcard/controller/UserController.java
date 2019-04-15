@@ -1,7 +1,5 @@
 package com.dallotech.arcard.controller;
 
-import com.dallotech.arcard.exception.ImageFileNotFoundException;
-import com.dallotech.arcard.model.dto.SaveImageDto;
 import com.dallotech.arcard.model.dto.UserEditRequestDto;
 import com.dallotech.arcard.model.internal.LoggedUser;
 import com.dallotech.arcard.payload.UploadFileResponse;
@@ -10,27 +8,16 @@ import com.dallotech.arcard.security.UserPrincipal;
 import com.dallotech.arcard.service.FileStorageService;
 import com.dallotech.arcard.service.SessionService;
 import com.dallotech.arcard.service.UserService;
-import com.dallotech.arcard.utils.QRGenerator;
-import com.dallotech.arcard.utils.QRGeneratorWithLogo;
-import com.google.zxing.WriterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.validation.Valid;
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 
 import static com.dallotech.arcard.constant.Urls.BASE_URL;
 
@@ -52,10 +39,11 @@ public class UserController {
         return userService.getUserDtoFromUserPrincipal(userPrincipal);
     }
 
-    @PostMapping("user/data")
+    @PostMapping("user/image")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
-        sessionService.verifyAndGetLoggedInUser();
-        String fileName = fileStorageService.storeFile(file);
+        LoggedUser user=sessionService.verifyAndGetLoggedInUser();
+        System.out.println(file.getName());
+        String fileName = fileStorageService.storeFile(file, user.getUser());
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/downloadFile/")
@@ -66,32 +54,37 @@ public class UserController {
                 file.getContentType(), file.getSize());
     }
 
-    @PostMapping("user/edit")
-    public ResponseEntity<?> editProfile(@Valid @RequestBody UserEditRequestDto userEditRequestDto){
-        LoggedUser loggedUser=sessionService.verifyAndGetLoggedInUser();
-        return userService.editInformation(loggedUser,userEditRequestDto);
+    @PostMapping("/user/edit")
+    public ResponseEntity<?> editProfile(@Valid @RequestBody UserEditRequestDto userEditRequestDto) {
+        LoggedUser loggedUser = sessionService.verifyAndGetLoggedInUser();
+        return userService.editInformation(loggedUser, userEditRequestDto);
 
     }
 
-    @GetMapping("user/qr_code")
-    public ResponseEntity<?> downloadFile(){
-        LoggedUser loggedUser=sessionService.verifyAndGetLoggedInUser();
-        try {
-            SaveImageDto saveImageDto= QRGenerator.createQRImage(loggedUser.getUser().getEmail());
-            if(saveImageDto.isSaveStatus()){
-                Resource resource = fileStorageService.loadFileAsResource(saveImageDto.getFileName()+".png");
-                String contentType = "image/png";
-                return ResponseEntity.ok()
-                        .contentType(MediaType.parseMediaType(contentType))
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                        .body(resource);
+    @GetMapping("/user/image")
+    public ResponseEntity<?> downloadProfileFile(){
+        LoggedUser loggedUser = sessionService.verifyAndGetLoggedInUser();
+        Resource resource = fileStorageService.loadFileAsResource(loggedUser.getUser().getImagePath(),"profile");
+        String contentType = "image/png";
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
 
-            }else {
-                return new ResponseEntity<>(new ImageFileNotFoundException("Image Not Found"),HttpStatus.NOT_FOUND);
-            }
-        } catch (WriterException | IOException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException e) {
-            return new ResponseEntity<>(new ImageFileNotFoundException("Image Not Found"), HttpStatus.NOT_FOUND);
-        }
+    }
+
+    @GetMapping("/user/qr_code")
+    public ResponseEntity<?> downloadQrFile() {
+        LoggedUser loggedUser = sessionService.verifyAndGetLoggedInUser();
+
+        Resource resource = fileStorageService.loadFileAsResource(loggedUser.getUser().getId() + ".png","qr");
+        String contentType = "image/png";
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+
+
     }
 
 

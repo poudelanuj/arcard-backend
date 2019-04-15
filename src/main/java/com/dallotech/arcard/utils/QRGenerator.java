@@ -25,10 +25,10 @@ import java.util.UUID;
 
 public class QRGenerator {
 
-    private static int SIZE=125;
+    private static int SIZE=150;
     private static String FILE_TYPE="png";
 
-    public static SaveImageDto createQRImage(String email) throws WriterException, IOException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+    public static SaveImageDto createQRImage(String email, String fileName) throws WriterException, IOException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         // Create the ByteMatrix for the QR-Code that encodes the given String
 
         Hashtable<EncodeHintType, ErrorCorrectionLevel> hintMap = new Hashtable<>();
@@ -56,10 +56,10 @@ public class QRGenerator {
                 }
             }
         }
-        String imageFileName=UUID.randomUUID().toString();
-        File qrFile=new File("./QrImage/"+imageFileName+"."+FILE_TYPE);
+
+        File qrFile=new File("./QrImage/"+fileName+"."+FILE_TYPE);
         SaveImageDto saveImageDto=new SaveImageDto();
-        saveImageDto.setFileName(imageFileName);
+        saveImageDto.setFileName(fileName);
         saveImageDto.setSaveStatus(ImageIO.write(image, FILE_TYPE, qrFile));
         return saveImageDto;
 

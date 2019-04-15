@@ -20,7 +20,7 @@ public class QRGeneratorTest {
 
     @Test
     public void generateQR() throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IOException, BadPaddingException, IllegalBlockSizeException, WriterException, InvalidKeyException {
-        assert(QRGenerator.createQRImage("poudel.01anuj@gmail.com").isSaveStatus());
+        assert(QRGenerator.createQRImage("poudel.01anuj@gmail.com","1").isSaveStatus());
     }
 
     @Test

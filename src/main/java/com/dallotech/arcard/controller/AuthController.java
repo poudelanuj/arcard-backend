@@ -1,18 +1,12 @@
 package com.dallotech.arcard.controller;
 
-import com.dallotech.arcard.model.db.Address;
 import com.dallotech.arcard.model.db.User;
-import com.dallotech.arcard.model.db.UserDescription;
-import com.dallotech.arcard.model.dto.LoginDto;
-import com.dallotech.arcard.model.dto.SignUpResponseDto;
-import com.dallotech.arcard.model.dto.SignupRequestDto;
-import com.dallotech.arcard.model.dto.UserDto;
+import com.dallotech.arcard.model.dto.*;
 import com.dallotech.arcard.payload.ApiResponse;
 import com.dallotech.arcard.payload.AuthResponse;
 import com.dallotech.arcard.repository.UserRepository;
 import com.dallotech.arcard.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -82,7 +78,9 @@ public class AuthController {
         String token = tokenProvider.createToken(authentication);
         SignUpResponseDto signUpResponseDto=new SignUpResponseDto();
         signUpResponseDto.setAuthResponse(new AuthResponse(token,"Bearer"));
-        signUpResponseDto.setUserDto(UserDto.getUserDtoFromUser(result));
+        List<ExperienceDto> experienceDtoList=new ArrayList<>();
+        List<EducationDto> educationDtoList=new ArrayList<>();
+        signUpResponseDto.setUserDto(UserDto.getUserDtoFromUser(result,educationDtoList,experienceDtoList));
 
         return ResponseEntity.ok(signUpResponseDto);
     }
