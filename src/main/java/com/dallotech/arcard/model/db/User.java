@@ -56,15 +56,15 @@ public class User {
 
     @Column(name = "skills")
     @Convert(converter = StringListConverter.class)
-    private List<String> skills;
+    private List<String> skills=new ArrayList<>();
 
     @Column(name="projects")
     @Convert(converter = StringListConverter.class)
-    private List<String> projects;
+    private List<String> projects=new ArrayList<>();
 
     @Column(name = "activities")
     @Convert(converter = StringListConverter.class)
-    private List<String> activities;
+    private List<String> activities=new ArrayList<>();
 
     @Column(name="facebook_link")
     private String facebookLink;

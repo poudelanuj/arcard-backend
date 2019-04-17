@@ -5,7 +5,7 @@ spring:
 #    password: ArCard$25314
     url: jdbc:mysql://localhost:3306/arcard?sslmode=require
     username: root
-    password: root
+    password: sagar
 #    driver-class-name: com.mysql.cj.jdbc.Driver
 
   flyway:
