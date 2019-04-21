@@ -79,7 +79,7 @@ public class UserService {
         user.setTwitterLink(userEditRequestDto.getTwitterLink());
         user.setLinkedinLink(userEditRequestDto.getLinkedinLink());
 
-        addressService.editAddress(userEditRequestDto, user);
+        Address address=addressService.editAddress(userEditRequestDto, user);
 
 
         if (!userEditRequestDto.getExperienceDtoList().isEmpty()) {
@@ -113,7 +113,7 @@ public class UserService {
 
         }
 
-        return UserDto.getUserDtoFromUser(user, educationDtoList, experienceDtoList, addressOptional.isPresent()?addressOptional.get():new Address());
+        return UserDto.getUserDtoFromUser(user, educationDtoList, experienceDtoList, addressOptional.orElseGet(Address::new));
 
 
     }

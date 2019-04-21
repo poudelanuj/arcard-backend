@@ -33,9 +33,8 @@ public class Address {
     @Column(name="country")
     private String country;
 
-    @OneToOne
-    @PrimaryKeyJoinColumn
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id_user" )
     private User user;
 
 
