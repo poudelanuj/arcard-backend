@@ -60,7 +60,8 @@ public class UserController {
         System.out.println(file.getName());
         String fileName = fileStorageService.storeFile(file, loggedUser.getUser());
 
-        String fileDownloadUri = Urls.LOCAL_DOWNLOAD_PATH +fileName;
+       // String fileDownloadUri = Urls.LOCAL_DOWNLOAD_PATH +fileName;
+        String fileDownloadUri = Urls.LIVE_DOWNLOAD_PATH +fileName;
         User user =loggedUser.getUser();
         user.setImagePath(fileDownloadUri);
         userRepository.save(user);
