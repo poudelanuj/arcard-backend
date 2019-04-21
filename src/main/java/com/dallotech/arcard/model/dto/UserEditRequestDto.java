@@ -42,6 +42,14 @@ public class UserEditRequestDto {
     private String twitterLink;
     @JsonProperty("linkedin_link")
     private String linkedinLink;
+    @JsonProperty("city")
+    private String city;
+    @JsonProperty("street_address")
+    private String streetAddress;
+    @JsonProperty("state")
+    private String state;
+    @JsonProperty("country")
+    private String country;
 
 
 

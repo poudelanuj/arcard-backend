@@ -1,8 +1,12 @@
 package com.dallotech.arcard.controller;
 
+import com.dallotech.arcard.constant.Urls;
+import com.dallotech.arcard.model.db.User;
 import com.dallotech.arcard.model.dto.UserEditRequestDto;
 import com.dallotech.arcard.model.internal.LoggedUser;
+import com.dallotech.arcard.payload.ApiResponse;
 import com.dallotech.arcard.payload.UploadFileResponse;
+import com.dallotech.arcard.repository.UserRepository;
 import com.dallotech.arcard.security.CurrentUser;
 import com.dallotech.arcard.security.UserPrincipal;
 import com.dallotech.arcard.service.FileStorageService;
@@ -11,13 +15,21 @@ import com.dallotech.arcard.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+
+
 import javax.validation.Valid;
+
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Optional;
 
 import static com.dallotech.arcard.constant.Urls.BASE_URL;
 
@@ -34,21 +46,25 @@ public class UserController {
     @Autowired
     private SessionService sessionService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping("/user/data")
     public ResponseEntity<?> getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
         return userService.getUserDtoFromUserPrincipal(userPrincipal);
     }
 
     @PostMapping("user/image")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
-        LoggedUser user=sessionService.verifyAndGetLoggedInUser();
+    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) throws URISyntaxException {
+        LoggedUser loggedUser=sessionService.verifyAndGetLoggedInUser();
         System.out.println(file.getName());
-        String fileName = fileStorageService.storeFile(file, user.getUser());
+        String fileName = fileStorageService.storeFile(file, loggedUser.getUser());
 
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
-                .path(fileName)
-                .toUriString();
+        String fileDownloadUri = Urls.LOCAL_DOWNLOAD_PATH +fileName;
+        User user =loggedUser.getUser();
+        user.setImagePath(fileDownloadUri);
+        userRepository.save(user);
+
 
         return new UploadFileResponse(fileName, fileDownloadUri,
                 file.getContentType(), file.getSize());
@@ -68,8 +84,24 @@ public class UserController {
         String contentType = "image/png";
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
+
+    }
+
+    @GetMapping("profile")
+    public ResponseEntity<?> viewProfileImage(@RequestParam("id") Long id){
+        Optional<User> userOptional=userRepository.findById(id);
+        if(userOptional.isPresent()){
+            Resource resource=fileStorageService.loadFileAsResource(userOptional.get().getImagePath(),"profile");
+            String contentType = "image/jpeg";
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .body(resource);
+
+
+        }
+        return new ResponseEntity<>(new ApiResponse(false,"Image Not Fould"), HttpStatus.BAD_REQUEST);
 
     }
 

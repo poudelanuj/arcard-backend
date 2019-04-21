@@ -1,5 +1,6 @@
 package com.dallotech.arcard.service;
 
+import com.dallotech.arcard.model.db.Address;
 import com.dallotech.arcard.model.db.Education;
 import com.dallotech.arcard.model.db.Experience;
 import com.dallotech.arcard.model.db.User;
@@ -9,9 +10,11 @@ import com.dallotech.arcard.model.dto.UserDto;
 import com.dallotech.arcard.model.dto.UserEditRequestDto;
 import com.dallotech.arcard.model.internal.LoggedUser;
 import com.dallotech.arcard.payload.ApiResponse;
+import com.dallotech.arcard.repository.AddressRepository;
 import com.dallotech.arcard.repository.EducationRepository;
 import com.dallotech.arcard.repository.ExperienceRepository;
 import com.dallotech.arcard.repository.UserRepository;
+import com.dallotech.arcard.security.AddressService;
 import com.dallotech.arcard.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,6 +44,11 @@ public class UserService {
     @Autowired
     ExperienceRepository experienceRepository;
 
+    @Autowired
+    AddressService addressService;
+
+    @Autowired
+    AddressRepository addressRepository;
 
     public ResponseEntity<?> getUserDtoFromUserPrincipal(UserPrincipal userPrincipal) {
         Optional<User> userOptional = userRepository.findByEmail(userPrincipal.getEmail());
@@ -71,6 +79,9 @@ public class UserService {
         user.setTwitterLink(userEditRequestDto.getTwitterLink());
         user.setLinkedinLink(userEditRequestDto.getLinkedinLink());
 
+        addressService.editAddress(userEditRequestDto, user);
+
+
         if (!userEditRequestDto.getExperienceDtoList().isEmpty()) {
             experienceService.addExperience(userEditRequestDto.getExperienceDtoList(), user);
         }
@@ -84,10 +95,12 @@ public class UserService {
 
     }
 
-    public UserDto getCompleteUserDetail(User user){
+    public UserDto getCompleteUserDetail(User user) {
         Optional<List<Education>> optionalEducationList = educationRepository.findByUser_Id(user.getId());
         Optional<List<Experience>> optionalExperienceList = experienceRepository.findByUser_Id(user.getId());
-        List<EducationDto> educationDtoList = new ArrayList<>();
+        Optional<Address> addressOptional = addressRepository.findByUser_Id(user.getId());
+
+        List < EducationDto > educationDtoList = new ArrayList<>();
         List<ExperienceDto> experienceDtoList = new ArrayList<>();
         if (optionalEducationList.isPresent()) {
             educationDtoList = optionalEducationList.get().stream().map(EducationDto::getEducationDto).collect(Collectors.toList());
@@ -100,7 +113,7 @@ public class UserService {
 
         }
 
-        return UserDto.getUserDtoFromUser(user,educationDtoList,experienceDtoList);
+        return UserDto.getUserDtoFromUser(user, educationDtoList, experienceDtoList, addressOptional.isPresent()?addressOptional.get():new Address());
 
 
     }

@@ -1,5 +1,6 @@
 package com.dallotech.arcard.controller;
 
+import com.dallotech.arcard.model.db.Address;
 import com.dallotech.arcard.model.db.User;
 import com.dallotech.arcard.model.dto.*;
 import com.dallotech.arcard.payload.ApiResponse;
@@ -80,7 +81,8 @@ public class AuthController {
         signUpResponseDto.setAuthResponse(new AuthResponse(token,"Bearer"));
         List<ExperienceDto> experienceDtoList=new ArrayList<>();
         List<EducationDto> educationDtoList=new ArrayList<>();
-        signUpResponseDto.setUserDto(UserDto.getUserDtoFromUser(result,educationDtoList,experienceDtoList));
+        Address address=new Address();
+        signUpResponseDto.setUserDto(UserDto.getUserDtoFromUser(result,educationDtoList,experienceDtoList,address));
 
         return ResponseEntity.ok(signUpResponseDto);
     }

@@ -1,5 +1,6 @@
 package com.dallotech.arcard.model.dto;
 
+import com.dallotech.arcard.model.db.Address;
 import com.dallotech.arcard.model.db.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -45,8 +46,18 @@ public class UserDto {
     private String twitterLink;
     @JsonProperty("linkedin_link")
     private String linkedinLink;
+    @JsonProperty("image_path")
+    private String imagePath;
+    @JsonProperty("city")
+    private String city;
+    @JsonProperty("street_address")
+    private String streetAddress;
+    @JsonProperty("state")
+    private String state;
+    @JsonProperty("country")
+    private String country;
 
-    public static UserDto getUserDtoFromUser(User user, List<EducationDto> educationDtoList, List<ExperienceDto> experienceDtoList){
+    public static UserDto getUserDtoFromUser(User user, List<EducationDto> educationDtoList, List<ExperienceDto> experienceDtoList, Address address){
         UserDto userDto=new UserDto();
         userDto.setEmail(user.getEmail());
         userDto.setFirstName(user.getFirstName());
@@ -64,6 +75,11 @@ public class UserDto {
         userDto.setInstagramLink(user.getInstagramLink());
         userDto.setTwitterLink(user.getTwitterLink());
         userDto.setLinkedinLink(user.getLinkedinLink());
+        userDto.setImagePath(user.getImagePath());
+        userDto.setCity(address.getCity());
+        userDto.setStreetAddress(address.getStreetAddress());
+        userDto.setState(address.getState());
+        userDto.setCountry(address.getCountry());
 
         return userDto;
     }
